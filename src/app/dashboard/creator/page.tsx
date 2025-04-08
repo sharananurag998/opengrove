@@ -111,18 +111,18 @@ export default async function CreatorDashboardPage() {
                           {product.name}
                         </h4>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                          ${product.price?.toString() || '0'} • {product._count.orderItems} sales
+                          ${product.price?.toString() || '0'} • {product._count.lineItems} sales
                         </p>
                       </div>
                       <div className="flex items-center space-x-4">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            product.isPublished
+                            product.published
                               ? 'bg-green-100 text-green-800'
                               : 'bg-gray-100 text-gray-800'
                           }`}
                         >
-                          {product.isPublished ? 'Published' : 'Draft'}
+                          {product.published ? 'Published' : 'Draft'}
                         </span>
                         <Link
                           href={`/dashboard/creator/products/${product.id}`}

@@ -1,11 +1,10 @@
-import { redirect } from 'next/navigation';
 import { requireRole } from '@/lib/auth/get-session';
 import { UserRole } from '@/generated/prisma';
 import { prisma } from '@/lib/db/prisma';
 import Link from 'next/link';
 
 export default async function AdminDashboardPage() {
-  const user = await requireRole(UserRole.ADMIN);
+  await requireRole(UserRole.ADMIN);
 
   // Get platform statistics
   const [

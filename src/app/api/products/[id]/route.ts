@@ -11,7 +11,7 @@ const updateProductSchema = z.object({
   price: z.number().min(0),
   type: z.nativeEnum(ProductType),
   pricingModel: z.nativeEnum(PricingModel),
-  isPublished: z.boolean(),
+  published: z.boolean(),
 });
 
 interface RouteParams {
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         _count: {
           select: {
             reviews: true,
-            orderItems: true,
+            lineItems: true,
           },
         },
       },
@@ -131,7 +131,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         price: data.price,
         type: data.type,
         pricingModel: data.pricingModel,
-        isPublished: data.isPublished,
+        published: data.published,
       },
     });
 

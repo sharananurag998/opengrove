@@ -11,7 +11,7 @@ const createProductSchema = z.object({
   price: z.number().min(0),
   type: z.nativeEnum(ProductType),
   pricingModel: z.nativeEnum(PricingModel),
-  isPublished: z.boolean().default(false),
+  published: z.boolean().default(false),
 });
 
 export async function POST(request: NextRequest) {
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     // Ensure slug is unique
     let slug = baseSlug;
     let counter = 1;
-    while (await prisma.product.findUnique({ where: { slug } })) {
+    while (await prisma.product.findFirst({ where: { slug, creatorId: creator.id } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         price: data.price,
         type: data.type,
         pricingModel: data.pricingModel,
-        isPublished: data.isPublished,
+        published: data.published,
         creatorId: creator.id,
       },
     });
@@ -91,14 +91,14 @@ export async function GET(request: NextRequest) {
     const creatorId = searchParams.get('creatorId');
     const isPublished = searchParams.get('published') === 'true';
 
-    const where: any = {};
+    const where: Record<string, any> = {};
     
     if (creatorId) {
       where.creatorId = creatorId;
     }
     
     if (searchParams.has('published')) {
-      where.isPublished = isPublished;
+      where.published = isPublished;
     }
 
     const products = await prisma.product.findMany({
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
         _count: {
           select: {
             reviews: true,
-            orderItems: true,
+            lineItems: true,
           },
         },
       },

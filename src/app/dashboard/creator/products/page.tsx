@@ -14,7 +14,7 @@ export default async function CreatorProductsPage() {
         include: {
           _count: {
             select: {
-              orderItems: true,
+              lineItems: true,
               reviews: true,
             },
           },
@@ -92,7 +92,7 @@ export default async function CreatorProductsPage() {
                           <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                             <span>${product.price}</span>
                             <span>•</span>
-                            <span>{product._count.orderItems} sales</span>
+                            <span>{product._count.lineItems} sales</span>
                             <span>•</span>
                             <span>{product._count.reviews} reviews</span>
                           </div>
@@ -101,12 +101,12 @@ export default async function CreatorProductsPage() {
                       <div className="flex items-center space-x-4">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            product.isPublished
+                            product.published
                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
                               : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                           }`}
                         >
-                          {product.isPublished ? 'Published' : 'Draft'}
+                          {product.published ? 'Published' : 'Draft'}
                         </span>
                         <span className="text-gray-400">
                           <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">

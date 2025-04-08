@@ -22,7 +22,7 @@ export default function NewProductPage() {
       price: parseFloat(formData.get('price') as string),
       type: formData.get('type'),
       pricingModel: formData.get('pricingModel'),
-      isPublished: formData.get('isPublished') === 'true',
+      published: formData.get('published') === 'true',
     };
 
     try {
@@ -160,7 +160,7 @@ export default function NewProductPage() {
                   />
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  For "Pay What You Want", this will be the minimum price
+                  For &quot;Pay What You Want&quot;, this will be the minimum price
                 </p>
               </div>
             </div>
@@ -174,12 +174,12 @@ export default function NewProductPage() {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                id="isPublished"
-                name="isPublished"
+                id="published"
+                name="published"
                 value="true"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              <label htmlFor="published" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                 Publish immediately
               </label>
             </div>
