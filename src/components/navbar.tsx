@@ -17,9 +17,15 @@ export function Navbar() {
     <nav className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-6">
             <Link href="/" className="text-xl font-bold text-gray-900 dark:text-white">
               OpenGrove
+            </Link>
+            <Link
+              href="/products"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Products
             </Link>
           </div>
           <div className="flex items-center space-x-4">
