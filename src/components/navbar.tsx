@@ -1,12 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { CartIcon } from './cart/cart-icon';
+import { CartDrawer } from './cart/cart-drawer';
 
 export function Navbar() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
@@ -14,6 +18,7 @@ export function Navbar() {
   };
 
   return (
+    <>
     <nav className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -29,6 +34,7 @@ export function Navbar() {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
+            <CartIcon onClick={() => setIsCartOpen(true)} />
             {status === 'loading' ? (
               <div className="text-gray-500">Loading...</div>
             ) : session ? (
@@ -69,5 +75,7 @@ export function Navbar() {
         </div>
       </div>
     </nav>
+    <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+    </>
   );
 }
