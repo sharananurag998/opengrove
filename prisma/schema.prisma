@@ -73,6 +73,7 @@ model User {
   customerProfile   Customer?
   affiliateProfile  Affiliate?
   sessions          Session[]
+  orders            Order[]
 }
 
 model Session {
@@ -221,22 +222,28 @@ model BundleItem {
 
 model Order {
   id                String        @id @default(cuid())
+  orderNumber       String        @unique
   customerId        String?
+  userId            String?
   email             String
+  customerEmail     String?
   status            OrderStatus   @default(PENDING)
   totalAmount       Decimal       @db.Decimal(10, 2)
+  total             Decimal       @db.Decimal(10, 2)
   currency          String        @default("USD")
   affiliateId       String?
   discountId        String?
   discountAmount    Decimal?      @db.Decimal(10, 2)
   taxAmount         Decimal?      @db.Decimal(10, 2)
+  stripeSessionId   String?       @unique
   metadata          Json?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
   // Relations
+  user              User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   customer          Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  lineItems         LineItem[]
+  items             LineItem[]
   payment           Payment?
   affiliate         Affiliate?    @relation(fields: [affiliateId], references: [id], onDelete: SetNull)
   discount          Discount?     @relation(fields: [discountId], references: [id], onDelete: SetNull)
@@ -244,9 +251,12 @@ model Order {
   downloadLinks     DownloadLink[]
 
   @@index([customerId])
+  @@index([userId])
   @@index([email])
   @@index([status])
   @@index([affiliateId])
+  @@index([orderNumber])
+  @@index([stripeSessionId])
 }
 
 model LineItem {
