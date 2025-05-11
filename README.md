@@ -169,7 +169,7 @@ OpenGrove is open source software licensed under the [MIT License](LICENSE).
 - [x] Shopping cart functionality
 - [x] Stripe integration
 - [x] Customer checkout flow
-- [ ] File delivery system
+- [x] File delivery system
 
 ### Phase 2: Creator Empowerment
 - [ ] Storefront customization
