@@ -4,22 +4,23 @@ export interface ProductFile {
   versionId: string | null;
   fileName: string;
   fileUrl: string;
-  fileSize: bigint;
+  fileSize: bigint | string;
   mimeType: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export interface ProductVersion {
   id: string;
   productId: string;
   name: string;
-  version: string;
+  version?: string;
   price: number | string | null;
-  changelog: string | null;
-  releaseDate: Date;
-  active: boolean;
-  downloadLimit: number | null;
+  changelog?: string | null;
+  releaseDate?: Date;
+  active?: boolean;
+  downloadLimit?: number | null;
+  description?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,10 +30,10 @@ export interface Review {
   customerId: string;
   productId: string;
   rating: number;
-  title: string | null;
+  title?: string | null;
   comment: string | null;
-  verified: boolean;
-  helpfulCount: number;
+  verified?: boolean;
+  helpfulCount?: number;
   createdAt: Date;
   updatedAt: Date;
   customer: {
@@ -52,8 +53,8 @@ export interface Creator {
   bio: string | null;
   avatar: string | null;
   website: string | null;
-  socialLinks: any;
-  verified: boolean;
+  socialLinks?: any;
+  verified?: boolean;
   createdAt: Date;
   updatedAt: Date;
   user: {
@@ -79,7 +80,7 @@ export interface ProductWithRelations {
   published: boolean;
   requiresLicense: boolean;
   enableAffiliate: boolean;
-  affiliateCommission: number | null;
+  affiliateCommission: number | string | null;
   preOrderDate: Date | null;
   createdAt: Date;
   updatedAt: Date;

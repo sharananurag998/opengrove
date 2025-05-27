@@ -78,7 +78,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         creatorId: product.creatorId,
       } as any;
 
-      await addItem(productForCart, selectedVersion || undefined);
+      await addItem(productForCart, selectedVersion as any || undefined);
       
       // Show success feedback
       const button = document.getElementById('add-to-cart-btn');

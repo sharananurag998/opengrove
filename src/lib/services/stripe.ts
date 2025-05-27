@@ -1,9 +1,7 @@
 import Stripe from 'stripe';
-import { Customer, Order, Product, LineItem } from '@prisma/client';
 
 // Initialize Stripe client
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
   typescript: true,
 });
 
@@ -146,7 +144,7 @@ export async function createCheckoutSession(data: CheckoutSessionData): Promise<
     },
     billing_address_collection: 'required',
     // For Indian regulations - collect shipping for physical products
-    shipping_address_collection: items.some(item => 
+    shipping_address_collection: items.some(() => 
       metadata.productType === 'PHYSICAL' || metadata.productType === 'BUNDLE'
     ) ? {
       allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'IE', 'JP', 'SG', 'HK', 'KR', 'TW'],

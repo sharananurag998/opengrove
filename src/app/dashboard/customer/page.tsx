@@ -14,7 +14,7 @@ export default async function CustomerDashboardPage() {
         take: 10,
         orderBy: { createdAt: 'desc' },
         include: {
-          lineItems: {
+          items: {
             include: {
               product: {
                 select: {
@@ -163,7 +163,7 @@ export default async function CustomerDashboardPage() {
                             Order #{order.id.slice(-8)}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {order.lineItems.length} item(s)
+                            {order.items.length} item(s)
                           </p>
                         </div>
                         <div className="text-right">

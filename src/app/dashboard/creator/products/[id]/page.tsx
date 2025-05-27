@@ -5,12 +5,13 @@ import { prisma } from '@/lib/db/prisma';
 import ProductEditForm from './product-edit-form';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function EditProductPage({ params }: PageProps) {
+  const { id } = await params;
   const user = await requireRole(UserRole.CREATOR);
 
   const creator = await prisma.creator.findUnique({
@@ -23,7 +24,7 @@ export default async function EditProductPage({ params }: PageProps) {
 
   const product = await prisma.product.findFirst({
     where: {
-      id: params.id,
+      id: id,
       creatorId: creator.id,
     },
     include: {

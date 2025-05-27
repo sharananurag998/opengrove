@@ -3,14 +3,14 @@ import { prisma } from '@/lib/db/prisma';
 import { generatePresignedUrl } from '@/lib/services/minio';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     linkId: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { linkId } = params;
+    const { linkId } = await params;
 
     // Find the download link
     const downloadLink = await prisma.downloadLink.findUnique({
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       include: {
         order: {
           include: {
-            lineItems: {
+            items: {
               include: {
                 product: {
                   include: {
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Collect all files for digital products in the order
     const filesToDownload: { key: string; fileName: string; productName: string }[] = [];
     
-    for (const lineItem of downloadLink.order.lineItems) {
+    for (const lineItem of downloadLink.order.items) {
       if (lineItem.product.type === 'DIGITAL') {
         // If productId is specified, only include files for that product
         if (productId && lineItem.productId !== productId) {

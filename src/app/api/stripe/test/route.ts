@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         id: account.id,
         type: account.type,
         country: account.country,
-        created: new Date(account.created * 1000).toISOString(),
+        created: account.created ? new Date(account.created * 1000).toISOString() : null,
         testMode: process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_'),
       },
     });

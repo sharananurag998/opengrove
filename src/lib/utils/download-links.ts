@@ -25,7 +25,7 @@ export async function createDownloadLinksForOrder(
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
-        lineItems: {
+        items: {
           include: {
             product: true,
           },
@@ -46,7 +46,7 @@ export async function createDownloadLinksForOrder(
 
     // Get unique digital products
     const digitalProducts = new Set<string>();
-    for (const lineItem of order.lineItems) {
+    for (const lineItem of order.items) {
       if (lineItem.product.type === 'DIGITAL') {
         digitalProducts.add(lineItem.productId);
       }
@@ -188,7 +188,7 @@ export async function getCustomerDownloadLinks(customerId: string) {
       include: {
         order: {
           include: {
-            lineItems: {
+            items: {
               include: {
                 product: {
                   select: {
@@ -212,7 +212,7 @@ export async function getCustomerDownloadLinks(customerId: string) {
     const productDownloads = new Map();
 
     for (const link of downloadLinks) {
-      for (const lineItem of link.order.lineItems) {
+      for (const lineItem of link.order.items) {
         if (lineItem.product.type === 'DIGITAL') {
           const productId = lineItem.product.id;
           

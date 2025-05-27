@@ -90,7 +90,7 @@ export default async function CreatorProductsPage() {
                             {product.name}
                           </h3>
                           <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                            <span>${product.price}</span>
+                            <span>${product.price?.toString() || "0"}</span>
                             <span>•</span>
                             <span>{product._count.lineItems} sales</span>
                             <span>•</span>

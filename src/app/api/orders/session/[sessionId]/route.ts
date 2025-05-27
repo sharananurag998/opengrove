@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth-options';
-import prisma from '@/lib/db/prisma';
+import { prisma } from '@/lib/db/prisma';
+
+interface RouteParams {
+  params: Promise<{ sessionId: string }>;
+}
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: RouteParams
 ) {
+  const { sessionId } = await params;
   try {
     const session = await getServerSession(authOptions);
-    const { sessionId } = params;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -45,8 +49,12 @@ export async function GET(
           },
         },
         customer: {
-          select: {
-            email: true,
+          include: {
+            user: {
+              select: {
+                email: true,
+              },
+            },
           },
         },
       },
@@ -75,7 +83,7 @@ export async function GET(
           ? `/api/downloads/${order.id}/${item.id}`
           : undefined,
       })),
-      customerEmail: order.customer?.email || order.customerEmail,
+      customerEmail: order.customer?.user?.email || order.customerEmail,
       total: Number(order.total),
       createdAt: order.createdAt.toISOString(),
     };

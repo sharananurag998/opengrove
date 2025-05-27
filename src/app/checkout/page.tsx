@@ -96,9 +96,9 @@ export default function CheckoutPage() {
       versionId: item.versionId,
       quantity: item.quantity,
       price: item.price,
-      name: item.name,
-      description: item.description || undefined,
-      image: item.coverImage || undefined,
+      name: item.product.name,
+      description: undefined,
+      image: item.product.coverImage || undefined,
     }));
 
     await createCheckout(

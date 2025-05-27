@@ -15,15 +15,16 @@ const updateProductSchema = z.object({
 });
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
     const product = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         creator: {
           include: {
@@ -83,6 +84,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     
     if (!session || session.user.role !== UserRole.CREATOR) {
@@ -110,7 +112,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Check if the product belongs to this creator
     const existingProduct = await prisma.product.findFirst({
       where: {
-        id: params.id,
+        id: id,
         creatorId: creator.id,
       },
     });
@@ -124,7 +126,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Update the product
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         name: data.name,
         description: data.description,
@@ -154,6 +156,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     
     if (!session || session.user.role !== UserRole.CREATOR) {
@@ -178,7 +181,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Check if the product belongs to this creator
     const product = await prisma.product.findFirst({
       where: {
-        id: params.id,
+        id: id,
         creatorId: creator.id,
       },
     });
@@ -192,7 +195,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // Delete the product
     await prisma.product.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: 'Product deleted successfully' });

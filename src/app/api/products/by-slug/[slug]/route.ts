@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const { slug } = await params;
     const product = await prisma.product.findFirst({
       where: { 
-        slug: params.slug,
+        slug: slug,
         published: true, // Only show published products publicly
       },
       include: {

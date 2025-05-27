@@ -4,14 +4,16 @@ import { prisma } from '@/lib/db/prisma';
 import { UserRole } from '@/generated/prisma';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
     fileId: string;
-  };
+  }>;
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id: productId, fileId } = await params;
+    
     // Check authentication
     const user = await getCurrentUser();
     if (!user) {
@@ -28,9 +30,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         { status: 403 }
       );
     }
-
-    const productId = params.id;
-    const fileId = params.fileId;
 
     // Check if product exists and belongs to the creator
     const product = await prisma.product.findFirst({

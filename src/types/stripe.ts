@@ -1,10 +1,6 @@
-import { Stripe } from 'stripe';
+import Stripe from 'stripe';
 
-export interface StripeWebhookEvent extends Stripe.Event {
-  data: {
-    object: Stripe.Event.Data.Object;
-  };
-}
+export type StripeWebhookEvent = Stripe.Event;
 
 export interface CheckoutLineItem {
   productId: string;

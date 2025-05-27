@@ -312,7 +312,7 @@ export default function ProductEditForm({ product }: ProductEditFormProps) {
                 name="description"
                 rows={4}
                 required
-                defaultValue={product.description}
+                defaultValue={product.description || ""}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
@@ -376,7 +376,7 @@ export default function ProductEditForm({ product }: ProductEditFormProps) {
                   min="0"
                   step="0.01"
                   required
-                  defaultValue={product.price}
+                  defaultValue={product.price?.toString() || ""}
                   className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
               </div>

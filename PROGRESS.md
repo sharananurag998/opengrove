@@ -86,17 +86,17 @@ This document tracks the development progress of OpenGrove, including completed 
 ## 🚧 In Progress
 
 ### Order Management
-- [ ] **Customer order history pages**
-  - Order listing with filters
-  - Order detail views
-  - Invoice downloads
-  - Refund requests
+- [x] **Customer order history pages**
+  - ✅ Order listing with filters
+  - ✅ Order detail views
+  - [ ] Invoice downloads
+  - [ ] Refund requests
 
 - [ ] **Email notifications**
-  - Order confirmation emails
-  - Download ready notifications
-  - Welcome emails
-  - Password reset emails
+  - [ ] Order confirmation emails
+  - [ ] Download ready notifications
+  - [ ] Welcome emails
+  - [ ] Password reset emails
 
 ## 📋 Upcoming Features
 

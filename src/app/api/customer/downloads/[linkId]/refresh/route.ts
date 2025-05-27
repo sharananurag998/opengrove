@@ -1,66 +1,72 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/auth-options';
-import { UserRole } from '@/generated/prisma';
-import { refreshDownloadLink } from '@/lib/utils/download-links';
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth/auth-options";
+import { prisma } from "@/lib/db/prisma";
 
 interface RouteParams {
-  params: {
-    linkId: string;
-  };
+  params: Promise<{ linkId: string }>;
 }
 
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: Request,
+  { params }: RouteParams
+) {
+  const { linkId } = await params;
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session || session.user.role !== UserRole.CUSTOMER) {
+
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const { linkId } = params;
-
-    // Get customer profile
-    const { prisma } = await import('@/lib/db/prisma');
-    const customer = await prisma.customer.findUnique({
-      where: { userId: session.user.id },
-    });
-
-    if (!customer) {
-      return NextResponse.json(
-        { message: 'Customer profile not found' },
-        { status: 404 }
-      );
-    }
-
-    // Check if the download link belongs to this customer
-    const downloadLink = await prisma.downloadLink.findFirst({
+    const downloadLink = await prisma.downloadLink.findUnique({
       where: {
         id: linkId,
+      },
+      include: {
         order: {
-          customerId: customer.id,
+          include: {
+            customer: true,
+          },
         },
       },
     });
 
     if (!downloadLink) {
       return NextResponse.json(
-        { message: 'Download link not found or unauthorized' },
+        { error: "Download link not found" },
         { status: 404 }
       );
     }
 
-    // Refresh the download link
-    const refreshedLink = await refreshDownloadLink(linkId, 7); // 7 days for refreshed links
+    if (downloadLink.order.customerId !== session.user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 403 }
+      );
+    }
 
-    return NextResponse.json(refreshedLink);
+    const updatedLink = await prisma.downloadLink.update({
+      where: {
+        id: linkId,
+      },
+      data: {
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        downloads: 0, // Reset download count
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      expiresAt: updatedLink.expiresAt,
+    });
   } catch (error) {
-    console.error('Error refreshing download link:', error);
+    console.error("Error refreshing download link:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: "Failed to refresh download link" },
       { status: 500 }
     );
   }

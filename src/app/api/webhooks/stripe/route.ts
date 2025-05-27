@@ -81,9 +81,9 @@ async function createOrderFromSession(session: Stripe.Checkout.Session) {
         metadata: {
           stripeSessionId: session.id,
           stripeCustomerId: typeof session.customer === 'string' ? session.customer : session.customer?.id || null,
-          customerDetails: session.customer_details,
+          customerDetails: session.customer_details ? JSON.parse(JSON.stringify(session.customer_details)) : null,
         },
-        lineItems: {
+        items: {
           create: items.map((item: any) => ({
             productId: item.productId,
             versionId: item.versionId || null,
@@ -110,7 +110,7 @@ async function createOrderFromSession(session: Stripe.Checkout.Session) {
     const orderWithRelations = await prisma.order.findUnique({
       where: { id: order.id },
       include: {
-        lineItems: {
+        items: {
           include: {
             product: {
               include: {
@@ -131,7 +131,7 @@ async function createOrderFromSession(session: Stripe.Checkout.Session) {
 
     // Generate license keys for products that require them
     const licenseKeys = [];
-    for (const lineItem of orderWithRelations!.lineItems) {
+    for (const lineItem of orderWithRelations!.items) {
       if (lineItem.product.requiresLicense) {
         for (let i = 0; i < lineItem.quantity; i++) {
           const licenseKey = await prisma.licenseKey.create({
@@ -151,7 +151,7 @@ async function createOrderFromSession(session: Stripe.Checkout.Session) {
     const downloadLinks = [];
     const uniqueProducts = new Set<string>();
     
-    for (const lineItem of orderWithRelations!.lineItems) {
+    for (const lineItem of orderWithRelations!.items) {
       if (lineItem.product.type === ProductType.DIGITAL && !uniqueProducts.has(lineItem.productId)) {
         uniqueProducts.add(lineItem.productId);
         
