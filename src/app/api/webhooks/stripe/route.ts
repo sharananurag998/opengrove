@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import { constructWebhookEvent, retrieveCheckoutSession } from '@/lib/services/stripe';
 import { prisma } from '@/lib/db/prisma';
 import { OrderStatus, PaymentStatus, ProductType } from '@/generated/prisma';
+import { sendOrderConfirmationEmail, sendDownloadReadyEmail } from '@/lib/services/email';
 
 // Disable body parsing, as we need the raw body for webhook verification
 export const runtime = 'nodejs';
@@ -202,8 +203,30 @@ async function createOrderFromSession(session: Stripe.Checkout.Session) {
       },
     });
 
-    // TODO: Send order confirmation email with download links and license keys
-    // This would integrate with your email service
+    // Send order confirmation email
+    try {
+      await sendOrderConfirmationEmail(orderWithRelations!);
+      console.log(`Order confirmation email sent for order ${order.id}`);
+    } catch (error) {
+      console.error(`Failed to send order confirmation email for order ${order.id}:`, error);
+    }
+
+    // Send download ready email if there are digital products
+    const digitalProducts = orderWithRelations!.items
+      .filter(item => item.product.type === ProductType.DIGITAL)
+      .map(item => ({
+        name: item.product.name,
+        coverImage: item.product.coverImage,
+      }));
+
+    if (digitalProducts.length > 0) {
+      try {
+        await sendDownloadReadyEmail(orderWithRelations!, digitalProducts);
+        console.log(`Download ready email sent for order ${order.id}`);
+      } catch (error) {
+        console.error(`Failed to send download ready email for order ${order.id}:`, error);
+      }
+    }
 
     // TODO: Trigger webhook to creator if they have webhooks configured
     // This would notify the creator of a new sale

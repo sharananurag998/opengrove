@@ -92,11 +92,11 @@ This document tracks the development progress of OpenGrove, including completed 
   - [ ] Invoice downloads
   - [ ] Refund requests
 
-- [ ] **Email notifications**
-  - [ ] Order confirmation emails
-  - [ ] Download ready notifications
-  - [ ] Welcome emails
-  - [ ] Password reset emails
+- [x] **Email notifications**
+  - ✅ Order confirmation emails
+  - ✅ Download ready notifications
+  - ✅ Welcome emails
+  - ✅ Password reset emails
 
 ## 📋 Upcoming Features
 
